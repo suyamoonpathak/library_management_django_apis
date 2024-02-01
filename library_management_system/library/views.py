@@ -102,13 +102,16 @@ class BorrowedBooksViewSet(viewsets.ModelViewSet):
         Custom method to handle the creation of a BorrowedBooks instance (borrowing a book).
         Sets HasBeenReturned to False when borrowing a book.
         """
-        data = request.data.copy()
-        data['HasBeenReturned'] = False  # Set HasBeenReturned as False when borrowing a book
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        try:
+            data = request.data.copy()
+            data['HasBeenReturned'] = False  # Set HasBeenReturned as False when borrowing a book
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except ValidationError as ve:
+            return Response({'error': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
 
 
     def update(self, request, *args, **kwargs):
@@ -116,37 +119,49 @@ class BorrowedBooksViewSet(viewsets.ModelViewSet):
         Custom method to handle the update of a BorrowedBooks instance (returning a book).
         Updates ReturnDate, Fee, and HasBeenReturned fields based on the return date provided.
         """
-        instance = self.get_object()
-        if instance.HasBeenReturned:
-            raise ValidationError("This book has already been returned.")
-        new_return_date = date.fromisoformat(request.data.get('ReturnDate'))
-        if new_return_date < instance.BorrowDate:
-            raise ValidationError("ReturnDate cannot be before BorrowDate.")
-        if new_return_date > instance.ReturnDate:
-            overdue_days = (new_return_date - instance.ReturnDate).days
-            instance.Fee = overdue_days * 10
-        instance.ReturnDate = new_return_date
-        instance.HasBeenReturned = True
-        instance.save()
+        try:
+            instance = self.get_object()
+            if instance.HasBeenReturned:
+                raise ValidationError("This book has already been returned.")
+            new_return_date = date.fromisoformat(request.data.get('ReturnDate'))
+            if new_return_date < instance.BorrowDate:
+                raise ValidationError("ReturnDate cannot be before BorrowDate.")
+            if new_return_date > instance.ReturnDate:
+                overdue_days = (new_return_date - instance.ReturnDate).days
+                instance.Fee = overdue_days * 10
+            instance.ReturnDate = new_return_date
+            instance.HasBeenReturned = True
+            instance.save()
 
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        except ValidationError as ve:
+            return Response({'error': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+
 
     @action(detail=False, url_path='all')
     def list_all(self, request):
         """
         Custom action to list all borrowed books.
         """
-        queryset = BorrowedBooks.objects.all()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        try:
+            queryset = BorrowedBooks.objects.all()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
     @action(detail=False, url_path='current')
     def list_current(self, request):
         """
         Custom action to list currently borrowed books.
         """
-        queryset = BorrowedBooks.objects.filter(HasBeenReturned=False)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        try:
+            queryset = BorrowedBooks.objects.filter(HasBeenReturned=False)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
