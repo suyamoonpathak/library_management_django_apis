@@ -63,7 +63,7 @@ REST_FRAMEWORK = {
 
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'library_management_system.utils.jwt_response_payload_handler',
-    'JWT_EXPIRATION_DELTA': timedelta(seconds=300),
+    'JWT_EXPIRATION_DELTA': timedelta(hours=2),
 }
 
 MIDDLEWARE = [
