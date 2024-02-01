@@ -17,7 +17,7 @@ Before you begin, make sure you have the following installed:
 Open your terminal (command prompt) and navigate to the directory where you want to store the project. Run the following command:
 
 ```bash
-git clone https://github.com/your-username/library-management-system.git
+git clone https://github.com/suyamoonpathak/library_management_django_apis
 ```
 
 ### 2. Extract the Zip
