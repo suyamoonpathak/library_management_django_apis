@@ -1,0 +1,6 @@
+ENGINE='django.db.backends.postgresql'
+DATABASE_NAME='library_management_system'
+USER='suyamoon'
+PASSWORD='password'
+HOST='localhost'
+PORT='5432'
