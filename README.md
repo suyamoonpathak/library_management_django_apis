@@ -29,7 +29,7 @@ If you downloaded a zip file, extract its contents to a folder.
 Navigate into the project directory:
 
 ```bash
-cd library-management-system
+cd library_management_django_apis/library_management_system/
 ```
 
 Create a virtual environment:
@@ -62,12 +62,34 @@ pip install -r requirements.txt
 
 ### 6. Setup PostgreSQL Database
 
-- Install PostgreSQL and create a user (e.g., "suyamoon") with the password "password."
-- Create a database (e.g., "library_management_system").
+-- Log in as the default PostgreSQL superuser (e.g., 'postgres')
+```bash
+sudo -u postgres psql
+```
+
+#### Create a User
+
+When the PostgreSQL command prompt or terminal opens, and enter the following commands to create a new user (replace 'suyamoon' with your desired username and 'password' with your desired password)
+```sql
+CREATE USER suyamoon WITH PASSWORD 'password';
+```
+
+#### Create a database (e.g., "library_management_system").
+```sql
+CREATE DATABASE library_management_system;
+```
+#### Grant all privileges on the database to the newly created user
+```sql
+GRANT ALL PRIVILEGES ON DATABASE library_management_system TO suyamoon;
+```
+#### Exit the PostgreSQL prompt
+```sql
+\q
+```
 
 ### 7. Create .env File
 
-Create a file named `.env` in the project directory. Copy the contents from `.env example` and adjust the names if you changed them in the previous step.
+Create a file named `.env` in the project directory (library_management_system). Copy the contents from `.env example` and adjust the names if you changed them in the previous step.
 
 ### 8. Run the Django App
 
