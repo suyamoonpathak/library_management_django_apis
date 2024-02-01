@@ -1,9 +1,9 @@
-from django.shortcuts import render
-
 from rest_framework import viewsets,status
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import User, Book, BookDetails, BorrowedBooks
 from .serializers import UserSerializer, BookSerializer, BookDetailsSerializer, BorrowedBooksSerializer
 from datetime import date
@@ -11,18 +11,28 @@ from datetime import date
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
 
 class BookDetailsViewSet(viewsets.ModelViewSet):
     queryset = BookDetails.objects.all()
     serializer_class = BookDetailsSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class BorrowedBooksViewSet(viewsets.ModelViewSet):
     queryset = BorrowedBooks.objects.all()
     serializer_class = BorrowedBooksSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()

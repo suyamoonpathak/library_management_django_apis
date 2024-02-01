@@ -3,7 +3,7 @@ from django.db import models
 class User(models.Model):
     UserID = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=100)
-    Email = models.EmailField(max_length=100)
+    Email = models.EmailField(max_length=100, unique=True)
     MembershipDate = models.DateField()
 
 class Book(models.Model):
@@ -25,5 +25,6 @@ class BorrowedBooks(models.Model):
     BookID = models.ForeignKey(Book, on_delete=models.CASCADE)
     BorrowDate = models.DateField()
     ReturnDate = models.DateField()
-    HasBeenReturned = models.BooleanField(default=False)
-    Fee = models.IntegerField(default=0)  
+    #fields added on my own
+    HasBeenReturned = models.BooleanField(default=False) #if the book has not be returned, this field is false, if it has been returned, it is true
+    Fee = models.IntegerField(default=0) #If the day the user returned the book is past the returnDate he set while borrowing, user will be charge 10 rupees per day for the due period
