@@ -36,6 +36,7 @@ BorrowedBooks Model:
         - BookID (ForeignKey to Book): Reference to the borrowed book.
         - BorrowDate (DateField): Date when the book was borrowed.
         - ReturnDate (DateField): Date when the book is expected to be returned.
+
         - HasBeenReturned (BooleanField): Indicates whether the book has been returned (default: False).
         - Fee (IntegerField): Fee charged if the book is returned after the expected return date (default: 0).
 
